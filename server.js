@@ -1,6 +1,5 @@
 import path from "path";
 import express from "express";
-import puppeteer from "puppeteer";
 
 const app = express(),
   DIST_DIR = __dirname,
