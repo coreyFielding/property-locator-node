@@ -3,10 +3,13 @@ language: node_js
 node_js:
   - 4.2
 
+services:
+  - docker
+
 script:
-  - docker build -f Docker/Dockerfile -t property-locator-node .
+  - docker build -f Docker/Dockerfile -t locator-scraper .
 
 after_success:
   - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-  - docker tag property-locator-node $DOCKER_USER/property-locator-node:latest
-  - docker push $DOCKER_USER/property-locator-node:latest
+  - docker tag locator-scraper $DOCKER_USER/locator-scraper:latest
+  - docker push $DOCKER_USER/locator-node:latest
