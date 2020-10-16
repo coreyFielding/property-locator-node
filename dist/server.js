@@ -19,7 +19,7 @@
 /*! runtime requirements: __webpack_require__, __webpack_require__.n, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path */ \"path\");\n/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! express */ \"express\");\n/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_1__);\n\n\nvar app = express__WEBPACK_IMPORTED_MODULE_1___default()(),\n    DIST_DIR = __dirname,\n    HTML_FILE = path__WEBPACK_IMPORTED_MODULE_0___default().join(DIST_DIR, \"index.html\");\napp.use(express__WEBPACK_IMPORTED_MODULE_1___default().static(DIST_DIR));\napp.get(\"*\", function (req, res) {\n  res.sendFile(HTML_FILE);\n});\nvar PORT = process.env.PORT || 8080;\napp.listen(PORT, function () {\n  console.log(\"listening on port \".concat(PORT, \"...\"));\n});\n\n//# sourceURL=webpack://property-locator-node/./server.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path */ \"path\");\n/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! express */ \"express\");\n/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var puppeteer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! puppeteer */ \"puppeteer\");\n/* harmony import */ var puppeteer__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(puppeteer__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\nvar app = express__WEBPACK_IMPORTED_MODULE_1___default()(),\n    DIST_DIR = __dirname,\n    HTML_FILE = path__WEBPACK_IMPORTED_MODULE_0___default().join(DIST_DIR, \"index.html\");\napp.use(express__WEBPACK_IMPORTED_MODULE_1___default().static(DIST_DIR));\nvar PORT = process.env.PORT || 8080;\napp.listen(PORT, function () {\n  console.log(\"listening on port \".concat(PORT, \"...\"));\n});\n\n//# sourceURL=webpack://property-locator-node/./server.js?");
 
 /***/ }),
 
@@ -48,6 +48,20 @@ eval("module.exports = require(\"express\");;\n\n//# sourceURL=webpack://propert
 /***/ ((module) => {
 
 eval("module.exports = require(\"path\");;\n\n//# sourceURL=webpack://property-locator-node/external_%22path%22?");
+
+/***/ }),
+
+/***/ "puppeteer":
+/*!****************************!*\
+  !*** external "puppeteer" ***!
+  \****************************/
+/*! dynamic exports */
+/*! export __esModule [maybe provided (runtime-defined)] [no usage info] [provision prevents renaming (no use info)] */
+/*! other exports [maybe provided (runtime-defined)] [no usage info] */
+/*! runtime requirements: module */
+/***/ ((module) => {
+
+eval("module.exports = require(\"puppeteer\");;\n\n//# sourceURL=webpack://property-locator-node/external_%22puppeteer%22?");
 
 /***/ })
 
