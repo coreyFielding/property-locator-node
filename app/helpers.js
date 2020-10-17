@@ -18,9 +18,7 @@ const composeAsync = (...fns) => arg => {
 }
 
 // Enforces URL is https and returns new URL string
-const enforceHttpsUrl = (url) => {
-    _.isString(url) ? url.replace(/^(https?:)?\/\//, "https://") : null
-}
+const enforceHttpsUrl = (url) => _.isString(url) ? url.replace(/^(https?:)?\/\//, "https://") : null
 
 // Remove non-numeric characters
 const sanitize = number => {
@@ -91,7 +89,7 @@ const extractUrlAttr = attr => {
     compose(enforceHttpsUrl, fetchElemAttribute(attr))
 }
 
-module.exports = {
+export {
     compose,
     composeAsync,
     enforceHttpsUrl,
@@ -101,7 +99,7 @@ module.exports = {
     fromPairsToObject,
     sendResponse,
     fetchHtmlFromUrl,
-    fetchElemInnerHTML,
+    fetchInnerHTML,
     fetchElemAttribute,
     extractFromElems,
     extractNumber,
