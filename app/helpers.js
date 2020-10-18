@@ -26,7 +26,7 @@ const sanitize = number => {
 }
 
 // Filters null values from array
-const withoutNulls = arr => _.isArray(arr) ? arr.filter(val => !_.isNull(val)) : _[_]
+const withoutNulls = arr => _.isArray(arr) ? _.filter(arr, (v) => !_.isNil(v)) : _[_]
 
 // Transforms array of ({key: value}) pairs to an object and returns final object
 const arrayPairsToObject = arr => arr.reduce((obj, pair) => ({...obj, ...pair}), {})
@@ -44,8 +44,15 @@ const sendResponse = res => async request => {
 }
 
 /**
+ * Remove line breaks and whitespace
+ * @param {string} str 
+ */
+const trimText = str => str.replace(/(\r\n|\n|\r)/gm, "").trim()
+
+/**
  * Loads html string returned from url
  * sends a Cheerio parser instance of loaded HTML
+ * @param {string} url
  */
 const fetchHtmlFromUrl = async url => {
     return await axios.get(enforceHttpsUrl(url)).then(res => cheerio.load(res.data)).catch(error => {
@@ -58,13 +65,16 @@ const fetchHtmlFromUrl = async url => {
  * Fetches inner HTML of element
  * return trimmed text
  */
-const fetchInnerHTML = elem => (elem.text && elem.text().trim()) || null
+const fetchInnerText = $ => elem => trimText($.find(elem).text()) || null
 
 /**
  * Fetches attribute from element
  * returns attribute value
  */
-const fetchElemAttribute = attr => elem => (elem.attr && elem.attr(attr)) || null
+const fetchElemAttribute = attribute => elem => {
+    console.log('attribute', attribute, 'element', elem.attr && elem.attr(attribute))
+   return (elem.attr && elem.attr(attribute).text()) || null 
+} 
 
 /**
  * Extract array of values from collection of elements
@@ -79,15 +89,7 @@ const extractFromElems = extractor => transform => elems => $ => {
  * Composed function that extracts number text from element
  * sanitises the number and returns parsed int
  */
-const extractNumber = compose(parseInt, sanitize, fetchInnerHTML)
-
-/**
- * Composed function that extracts url string from element attribute
- * returns url with https scheme
- */
-const extractUrlAttr = attr => {
-    compose(enforceHttpsUrl, fetchElemAttribute(attr))
-}
+const extractNumber = compose(parseInt, sanitize, fetchInnerText)
 
 export {
     compose,
@@ -99,9 +101,8 @@ export {
     fromPairsToObject,
     sendResponse,
     fetchHtmlFromUrl,
-    fetchInnerHTML,
+    fetchInnerText,
     fetchElemAttribute,
     extractFromElems,
     extractNumber,
-    extractUrlAttr
 }

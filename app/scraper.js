@@ -1,11 +1,12 @@
+import { without } from 'lodash'
 import {
     compose,
     composeAsync,
     enforceHttpsUrl,
     fetchHtmlFromUrl,
     fetchElemAttribute,
-    fetchInnerHTML,
-    extractFromElems
+    fetchInnerText,
+    extractUrlAttr,
 } from './helpers'
 const cheerio = require('cheerio')
 const _ = require('lodash')
@@ -26,24 +27,22 @@ const extractBaseUrlAttribute = attr => compose(enforceHttpsUrl, baseRelativeUrl
  */
 
  const extractPropertyInfo = $ => {
-     const properties = new Set()
-     const titles = new Set()
-     const addresses = new Set()
-     const list = $("#l-searchResults > div")
-     list.find('div').each((index, elem) => {
-        titles.add($(elem).find('h2').text())
-        addresses.add($(elem).find('address').text())
+     const $page = $("#l-searchResults > div")
+
+     const items = new Set()
+
+     $page.find('div').each((index, elem) => {
+        items.add({
+            title: fetchInnerText($(elem))("h2"),
+            address: fetchInnerText($(elem))("address"),
+            description: fetchInnerText($(elem))("span"),
+            price: fetchInnerText($(elem))(".propertyCard-priceValue"),
+            //images: compose(extractUrlAttr, fetchElemAttribute("src")(`${$(elem).find(".propertyCard-img").find("img")}`))
+        })
      })
 
-     return {
-        titles: [...titles].sort(),
-        addresses: [...addresses].sort()
-     } 
-     const card = $("#property-84191476")
-     const child = card.find(".propertyCard")
-     const wrapper = child.find(".propertyCard-wrapper")
-     const content = wrapper.find(".propertyCard-content")
-     return content.text()
+    return _.filter([...items], (item) => !Object.values(item).includes(null))
+
  }
 
  export const fetchProperties = async () => {
