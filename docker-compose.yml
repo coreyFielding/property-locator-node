@@ -1,0 +1,16 @@
+version: "2"
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  scrape_server:
+    image: property-scraper:latest
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
