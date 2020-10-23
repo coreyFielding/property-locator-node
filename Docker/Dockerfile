@@ -6,9 +6,9 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY . /usr/src/app
 
-EXPOSE 8080
+EXPOSE ${APP_SERVER_PORT}
 
-CMD ["npm run", "start"]
+CMD ["npm", "start"]
 

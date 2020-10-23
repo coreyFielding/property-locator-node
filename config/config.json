@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "admin",
+    "password": "secret",
+    "database": "scraper-postgres",
+    "host": "postgres",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "admin",
+    "password": "secret",
+    "database": "scraper-postgres",
+    "host": "postgres",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

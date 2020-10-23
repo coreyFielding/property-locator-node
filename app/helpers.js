@@ -38,7 +38,7 @@ const fromPairsToObject = compose(arrayPairsToObject, withoutNulls)
  * Handled fulfilled request and sends JSON response
  */
 const sendResponse = res => async request => {
-    return await request.then(data => res.json({status: "success", data})).catch(({status: code = 500}) => {
+    return await request.then(data => res.send({status: "success", data})).catch(({status: code = 500}) => {
         res.status(code).json({status: "failure", code, message: code == 404 ? 'Not found.' : 'Request failed.'})
     })
 }
@@ -72,7 +72,6 @@ const fetchInnerText = $ => elem => trimText($.find(elem).text()) || null
  * returns attribute value
  */
 const fetchElemAttribute = attribute => elem => {
-    console.log('attribute', attribute, 'element', elem.attr && elem.attr(attribute))
    return (elem.attr && elem.attr(attribute).text()) || null 
 } 
 
