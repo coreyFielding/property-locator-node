@@ -1,2 +1,7 @@
--- CREATE TABLE property (id int, title string, description string, address string, pricing string)
-CREATE TABLE PROPERTY (ID int, title string, description string, address string, pricing string);
+CREATE TABLE Property (
+    _id serial PRIMARY KEY,
+    title text NOT NULL,
+    description text NOT NULL,
+    address text NOT NULL,
+    pricing text NOT NULL
+)

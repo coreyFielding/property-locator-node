@@ -59,7 +59,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /*! runtime requirements: __webpack_require__, __webpack_require__.n, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ \"@babel/runtime/regenerator\");\n/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ \"@babel/runtime/helpers/asyncToGenerator\");\n/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _app_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/helpers */ \"./app/helpers.js\");\n/* harmony import */ var _app_scraper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app/scraper */ \"./app/scraper.js\");\n\n\n\nvar path = __webpack_require__(/*! path */ \"path\");\n\nvar express = __webpack_require__(/*! express */ \"express\");\n\nvar logger = __webpack_require__(/*! morgan */ \"morgan\");\n\nvar cors = __webpack_require__(/*! cors */ \"cors\");\n\n\n\nvar root = __dirname;\nvar app = express();\nvar PORT = process.env.PORT || 5000;\napp.set('port', PORT);\napp.use(logger('dev'));\napp.use(express[\"static\"](path.join(root, 'public')));\napp.use(cors());\napp.get('/', /*#__PURE__*/function () {\n  var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(req, res, next) {\n    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {\n      while (1) {\n        switch (_context.prev = _context.next) {\n          case 0:\n            res.header('Access-Control-Allow-Origin', '*');\n            (0,_app_helpers__WEBPACK_IMPORTED_MODULE_2__.sendResponse)(res)((0,_app_scraper__WEBPACK_IMPORTED_MODULE_3__.fetchProperties)());\n\n          case 2:\n          case \"end\":\n            return _context.stop();\n        }\n      }\n    }, _callee);\n  }));\n\n  return function (_x, _x2, _x3) {\n    return _ref.apply(this, arguments);\n  };\n}());\napp.listen(PORT, function () {\n  console.log(\"port \".concat(PORT, \"...\"));\n});\n\n//# sourceURL=webpack://property-locator-node/./server.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _babel_runtime_helpers_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/taggedTemplateLiteral */ \"@babel/runtime/helpers/taggedTemplateLiteral\");\n/* harmony import */ var _babel_runtime_helpers_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _app_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app/helpers */ \"./app/helpers.js\");\n/* harmony import */ var _app_scraper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/scraper */ \"./app/scraper.js\");\n\n\nfunction _templateObject() {\n  var data = _babel_runtime_helpers_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0___default()([\"\\n  type Query {\\n    property: Property\\n  }\\n  type Property {\\n    title: String!\\n    description: String!\\n    address: String!\\n    pricing: String!\\n  }\\n\"]);\n\n  _templateObject = function _templateObject() {\n    return data;\n  };\n\n  return data;\n}\n\nvar path = __webpack_require__(/*! path */ \"path\");\n\nvar express = __webpack_require__(/*! express */ \"express\");\n\nvar bodyParser = __webpack_require__(/*! body-parser */ \"body-parser\");\n\nvar _require = __webpack_require__(/*! apollo-server-express */ \"apollo-server-express\"),\n    ApolloServer = _require.ApolloServer,\n    gql = _require.gql;\n\nvar logger = __webpack_require__(/*! morgan */ \"morgan\");\n\nvar cors = __webpack_require__(/*! cors */ \"cors\");\n\n\n\nvar root = __dirname;\nvar app = express();\nvar PORT = process.env.PORT || 5000;\nvar schema = gql(_templateObject());\nvar resolvers = {\n  Query: {\n    property: function property() {\n      return {\n        title: 'Title 1',\n        description: 'Description 1',\n        address: 'Address 1',\n        pricing: 'Pricing 1'\n      };\n    }\n  }\n};\nvar server = new ApolloServer({\n  typeDefs: schema,\n  resolvers: resolvers\n});\nserver.applyMiddleware({\n  app: app,\n  path: '/graphql'\n});\napp.set('port', PORT);\napp.use(logger('dev'));\napp.use(cors()); // app.get('/', async (req, res, next) => {\n//   res.header('Access-Control-Allow-Origin', '*')\n//   sendResponse(res)(fetchProperties())\n// })\n\napp.listen(PORT, function () {\n  console.log(\"port \".concat(PORT, \"...\"));\n});\n\n//# sourceURL=webpack://property-locator-node/./server.js?");
 
 /***/ }),
 
@@ -91,6 +91,20 @@ eval("module.exports = require(\"@babel/runtime/helpers/defineProperty\");;\n\n/
 
 /***/ }),
 
+/***/ "@babel/runtime/helpers/taggedTemplateLiteral":
+/*!***************************************************************!*\
+  !*** external "@babel/runtime/helpers/taggedTemplateLiteral" ***!
+  \***************************************************************/
+/*! dynamic exports */
+/*! export __esModule [maybe provided (runtime-defined)] [no usage info] [provision prevents renaming (no use info)] */
+/*! other exports [maybe provided (runtime-defined)] [no usage info] */
+/*! runtime requirements: module */
+/***/ ((module) => {
+
+eval("module.exports = require(\"@babel/runtime/helpers/taggedTemplateLiteral\");;\n\n//# sourceURL=webpack://property-locator-node/external_%22@babel/runtime/helpers/taggedTemplateLiteral%22?");
+
+/***/ }),
+
 /***/ "@babel/runtime/helpers/toConsumableArray":
 /*!***********************************************************!*\
   !*** external "@babel/runtime/helpers/toConsumableArray" ***!
@@ -119,6 +133,19 @@ eval("module.exports = require(\"@babel/runtime/regenerator\");;\n\n//# sourceUR
 
 /***/ }),
 
+/***/ "apollo-server-express":
+/*!****************************************!*\
+  !*** external "apollo-server-express" ***!
+  \****************************************/
+/*! dynamic exports */
+/*! exports [maybe provided (runtime-defined)] [no usage info] */
+/*! runtime requirements: module */
+/***/ ((module) => {
+
+eval("module.exports = require(\"apollo-server-express\");;\n\n//# sourceURL=webpack://property-locator-node/external_%22apollo-server-express%22?");
+
+/***/ }),
+
 /***/ "axios":
 /*!************************!*\
   !*** external "axios" ***!
@@ -129,6 +156,19 @@ eval("module.exports = require(\"@babel/runtime/regenerator\");;\n\n//# sourceUR
 /***/ ((module) => {
 
 eval("module.exports = require(\"axios\");;\n\n//# sourceURL=webpack://property-locator-node/external_%22axios%22?");
+
+/***/ }),
+
+/***/ "body-parser":
+/*!******************************!*\
+  !*** external "body-parser" ***!
+  \******************************/
+/*! dynamic exports */
+/*! exports [maybe provided (runtime-defined)] [no usage info] */
+/*! runtime requirements: module */
+/***/ ((module) => {
+
+eval("module.exports = require(\"body-parser\");;\n\n//# sourceURL=webpack://property-locator-node/external_%22body-parser%22?");
 
 /***/ }),
 

@@ -1,26 +1,37 @@
-const path = require("path");
-const express = require("express");
-const logger = require('morgan')
-const cors = require("cors");
-
-import { sendResponse } from './app/helpers'
+import express from 'express';
+import cors from 'cors'
+import {ApolloServer, gql, makeExecutableSchema} from 'apollo-server-express'
+import {typeDefs, resolvers} from './graphql/property/graphqlSchema'
+import models from './postgres/models'
+import { addToDb } from './app/helpers'
 import {fetchProperties} from "./app/scraper";
 
-const root = __dirname
-const app = express()
 const PORT = process.env.PORT || 5000;
 
-app.set('port', PORT)
-app.use(logger('dev'))
-app.use(express.static(path.join(root, 'public')))
-app.use(cors());
-
-app.get('/', async (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  sendResponse(res)(fetchProperties())
+const schema = makeExecutableSchema({typeDefs: gql(typeDefs), resolvers})
+const server = new ApolloServer({
+  schema,
+  context: async ({req, connection}) => {
+    if (connection) return {models}
+  },
+  onHealthCheck: () => {
+    return new Promise((resolve, reject) => {
+      true ? resolve() : reject()
+    })
+  }
 })
 
+const app = express()
 
-app.listen(PORT, () => {
-  console.log(`port ${PORT}...`);
-});
+app.use(cors())
+server.applyMiddleware({app, path: '/graphql'})
+
+const initialiseDb = () => addToDb()(fetchProperties())
+
+models.sequelize.sync().then(async () => {
+  await initialiseDb()
+
+  app.listen(PORT, async() => {
+    console.log(`Apollo Server on http://loclhost:${PORT}/graphql`)
+  })
+})

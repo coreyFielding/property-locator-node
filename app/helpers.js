@@ -1,6 +1,9 @@
-const _ = require('lodash')
-const axios = require("axios")
-const cheerio = require('cheerio')
+import { fetchProperties } from './scraper'
+import resolvers from '../graphql/property/graphqlSchema'
+import _ from 'lodash'
+import axios from 'axios'
+import cheerio from 'cheerio'
+import models from '../postgres/models'
 
 // Compose function arguments in descending order to an overall function
 const compose = (...fns) => arg => {
@@ -35,10 +38,23 @@ const arrayPairsToObject = arr => arr.reduce((obj, pair) => ({...obj, ...pair}),
 const fromPairsToObject = compose(arrayPairsToObject, withoutNulls)
 
 /**
+ * Initialise database with response from scraper
+ * 
+ */
+const addToDb = () => fetchProperties => {
+    return fetchProperties.then(async (items) => {
+        await Promise.all(items.map(async (item) => {
+            const {title, description, address, pricing} = item
+            models.Property.create({title, description, address, pricing})
+
+        }))
+})}
+
+/**
  * Handled fulfilled request and sends JSON response
  */
 const sendResponse = res => async request => {
-    return await request.then(data => res.send({status: "success", data})).catch(({status: code = 500}) => {
+    return await request.then(data => res.send({status: "success", data: res})).catch(({status: code = 500}) => {
         res.status(code).json({status: "failure", code, message: code == 404 ? 'Not found.' : 'Request failed.'})
     })
 }
@@ -98,7 +114,7 @@ export {
     withoutNulls,
     arrayPairsToObject,
     fromPairsToObject,
-    sendResponse,
+    addToDb,
     fetchHtmlFromUrl,
     fetchInnerText,
     fetchElemAttribute,
