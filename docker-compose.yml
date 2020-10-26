@@ -1,0 +1,71 @@
+version: "2.1"
+
+services:
+  scrape_server:
+    container_name: scraper-node
+    image: property-scraper:latest
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile
+    ports:
+      - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - pgadmin_net
+
+  pgadmin:
+    image: dpage/pgadmin4:4.18
+    container_name: pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@linuxhint.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - pgadmin_net
+
+  postgres:
+    image: postgres:12.2
+    container_name: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      # - postgres-data:/var/lib/postgresql/data/
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    networks:
+      - pgadmin_net
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-q",
+          "-d",
+          "${POSTGRES_DB}",
+          "-U",
+          "${POSTGRES_USER}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgadmin-data:
+  # postgres-data:
+
+networks:
+  pgadmin_net:
+    driver: bridge

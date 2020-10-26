@@ -1,6 +1,9 @@
-const _ = require('lodash')
-const axios = require("axios")
-const cheerio = require('cheerio')
+import { fetchProperties } from './scraper'
+import resolvers from '../graphql/property/graphqlSchema'
+import _ from 'lodash'
+import axios from 'axios'
+import cheerio from 'cheerio'
+import models from '../postgres/models'
 
 // Compose function arguments in descending order to an overall function
 const compose = (...fns) => arg => {
@@ -26,7 +29,7 @@ const sanitize = number => {
 }
 
 // Filters null values from array
-const withoutNulls = arr => _.isArray(arr) ? arr.filter(val => !_.isNull(val)) : _[_]
+const withoutNulls = arr => _.isArray(arr) ? _.filter(arr, (v) => !_.isNil(v)) : _[_]
 
 // Transforms array of ({key: value}) pairs to an object and returns final object
 const arrayPairsToObject = arr => arr.reduce((obj, pair) => ({...obj, ...pair}), {})
@@ -35,17 +38,37 @@ const arrayPairsToObject = arr => arr.reduce((obj, pair) => ({...obj, ...pair}),
 const fromPairsToObject = compose(arrayPairsToObject, withoutNulls)
 
 /**
+ * Initialise database with response from scraper
+ * 
+ */
+const addToDb = () => fetchProperties => {
+    return fetchProperties.then(async (items) => {
+        await Promise.all(items.map(async (item) => {
+            const {title, description, address, pricing} = item
+            models.Property.create({title, description, address, pricing})
+
+        }))
+})}
+
+/**
  * Handled fulfilled request and sends JSON response
  */
 const sendResponse = res => async request => {
-    return await request.then(data => res.json({status: "success", data})).catch(({status: code = 500}) => {
+    return await request.then(data => res.send({status: "success", data: res})).catch(({status: code = 500}) => {
         res.status(code).json({status: "failure", code, message: code == 404 ? 'Not found.' : 'Request failed.'})
     })
 }
 
 /**
+ * Remove line breaks and whitespace
+ * @param {string} str 
+ */
+const trimText = str => str.replace(/(\r\n|\n|\r)/gm, "").trim()
+
+/**
  * Loads html string returned from url
  * sends a Cheerio parser instance of loaded HTML
+ * @param {string} url
  */
 const fetchHtmlFromUrl = async url => {
     return await axios.get(enforceHttpsUrl(url)).then(res => cheerio.load(res.data)).catch(error => {
@@ -58,13 +81,15 @@ const fetchHtmlFromUrl = async url => {
  * Fetches inner HTML of element
  * return trimmed text
  */
-const fetchInnerHTML = elem => (elem.text && elem.text().trim()) || null
+const fetchInnerText = $ => elem => trimText($.find(elem).text()) || null
 
 /**
  * Fetches attribute from element
  * returns attribute value
  */
-const fetchElemAttribute = attr => elem => (elem.attr && elem.attr(attr)) || null
+const fetchElemAttribute = attribute => elem => {
+   return (elem.attr && elem.attr(attribute).text()) || null 
+} 
 
 /**
  * Extract array of values from collection of elements
@@ -79,15 +104,7 @@ const extractFromElems = extractor => transform => elems => $ => {
  * Composed function that extracts number text from element
  * sanitises the number and returns parsed int
  */
-const extractNumber = compose(parseInt, sanitize, fetchInnerHTML)
-
-/**
- * Composed function that extracts url string from element attribute
- * returns url with https scheme
- */
-const extractUrlAttr = attr => {
-    compose(enforceHttpsUrl, fetchElemAttribute(attr))
-}
+const extractNumber = compose(parseInt, sanitize, fetchInnerText)
 
 export {
     compose,
@@ -97,11 +114,10 @@ export {
     withoutNulls,
     arrayPairsToObject,
     fromPairsToObject,
-    sendResponse,
+    addToDb,
     fetchHtmlFromUrl,
-    fetchInnerHTML,
+    fetchInnerText,
     fetchElemAttribute,
     extractFromElems,
     extractNumber,
-    extractUrlAttr
 }

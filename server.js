@@ -1,25 +1,37 @@
-const path = require("path");
-const express = require("express");
-const logger = require('morgan')
-import { sendResponse } from './app/helpers'
+import express from 'express';
+import cors from 'cors'
+import {ApolloServer, gql, makeExecutableSchema} from 'apollo-server-express'
+import {typeDefs, resolvers} from './graphql/property/graphqlSchema'
+import models from './postgres/models'
+import { addToDb } from './app/helpers'
 import {fetchProperties} from "./app/scraper";
 
-const root = __dirname
+const PORT = process.env.PORT || 5000;
+
+const schema = makeExecutableSchema({typeDefs: gql(typeDefs), resolvers})
+const server = new ApolloServer({
+  schema,
+  context: async ({req, connection}) => {
+    if (connection) return {models}
+  },
+  onHealthCheck: () => {
+    return new Promise((resolve, reject) => {
+      true ? resolve() : reject()
+    })
+  }
+})
+
 const app = express()
-const PORT = process.env.PORT || 8080;
 
-app.set('port', PORT)
-app.use(logger('dev'))
-app.use(express.static(path.join(root, 'public')))
+app.use(cors())
+server.applyMiddleware({app, path: '/graphql'})
 
-app.get('/', async (req, res, next) => {
-  sendResponse(res)(fetchProperties())
+const initialiseDb = () => addToDb()(fetchProperties())
+
+models.sequelize.sync().then(async () => {
+  await initialiseDb()
+
+  app.listen(PORT, async() => {
+    console.log(`Apollo Server on http://loclhost:${PORT}/graphql`)
+  })
 })
-
-app.get('/property', (req, res, next) => {
-  res.send(sendResponse(res)(fetchProperties()))
-})
-
-app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}...`);
-});
